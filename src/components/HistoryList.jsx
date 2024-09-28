@@ -10,7 +10,7 @@ export const HistoryList = () => {
       const res = await axios
         .get("api/history")
         .then((res) => {
-          console.log(res.data);
+          
           setHistoryArr(res.data);
         })
         
@@ -34,7 +34,7 @@ export const HistoryList = () => {
       <div className="flex space-x-4">
         {/* Map your elements here */}
         {historyArr.map((card, i) => (
-          <Card card={card.Card}/>
+          <Card key={i}  card={card.Card}/>
         ))}
       </div>
     </div>

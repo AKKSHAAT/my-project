@@ -1,16 +1,27 @@
-import React from 'react';
-import './index.css';
-import { Table } from './components/Table';
+import React from "react";
+import "./index.css";
+import { Table } from "./components/Table";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Nav } from "./components/Nav";
+import AddPoints from "./components/AddPoints";
 
 function App() {
   return (
-    <div className="container mx-auto mt-5 px-4">
-      <h1 className="text-3xl font-bold text-center mb-4">☎️ Tring Tring & Co</h1>
-      
-      <div className="overflow-x-auto">
-        <Table />
-      </div>
-    </div>
+    <Router>
+        <Nav />
+      {/* <div className="container mx-auto mt-5 px-4">
+
+        <div className="overflow-x-auto">
+          <Table />
+        </div>
+      </div> */}
+
+
+      <Routes>
+        <Route path="/" element={<Table />} />
+        <Route path="/add" element={<AddPoints />} />
+      </Routes>
+    </Router>
   );
 }
 

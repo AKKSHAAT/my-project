@@ -1,6 +1,12 @@
 import React from "react";
 
-const Row = ( {name, qty, price, out}) => {
+const Row = ( {card_id, name, qty, price, out, socket}) => {
+
+  const handleClick = () => {
+    socket.emit("win", {card_id, name,});
+    console.log(socket);
+  };
+
   return (
     <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
       <th
@@ -16,7 +22,7 @@ const Row = ( {name, qty, price, out}) => {
       <td className="px-6 py-4">{price - out}</td>
       <td className="px-6 py-4">
         <button
-          href="#"
+          onClick={handleClick}
           className="font-medium text-white px-4 py-2 bg-green-600 rounded-xl "
         >
           Win

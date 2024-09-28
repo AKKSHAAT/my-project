@@ -1,32 +1,31 @@
 import React, { useEffect, useState } from "react";
 import Row from "./Row";
 import axios from "../axios.js";
+import { io } from "socket.io-client";
+
 
 export const Table = () => {
   const PRICE = 11;
   const PRIZE_MULTIPLE = 10;
   const [buyRateArr, setBuyRateArr] = useState(null);
-  const getBuyRate = async () => {
-    await axios
-      .get("/api/buyrate")
-      .then((res) => {
-        setBuyRateArr(res.data);
-        
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const [socketState, setSocketState] = useState(null);
 
   useEffect(() => {
-    getBuyRate(); // Call once on mount
+    const socket = io("http://localhost:6969"); // Ensure the URL and port are correct
+    setSocketState(socket);
+    // Listen for buy rate updates
+    socket.on("buyRateUpdate", (data) => {
+      console.log("data::: " , data);
+      setBuyRateArr(data);
+    });
 
-    const intervalId = setInterval(() => {
-      getBuyRate(); // Call every 2 seconds
-    }, 2000);
-
-    return () => clearInterval(intervalId); // Cleanup on unmount
+    // Cleanup on unmount
+    return () => {
+      socket.disconnect();
+    };
   }, []);
+
+  
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
@@ -39,13 +38,13 @@ export const Table = () => {
               Qty
             </th>
             <th scope="col" className="px-6 py-3">
-              In {'(₹11)'}
+              In {"(₹11)"}
             </th>
             <th scope="col" className="px-6 py-3">
-              Out {'(₹10)'}
+              Out {"(₹10)"}
             </th>
             <th scope="col" className="px-6 py-3">
-            difference {''}
+              difference {""}
             </th>
             <th scope="col" className="px-6 py-3">
               Action
@@ -55,15 +54,17 @@ export const Table = () => {
         <tbody>
           {buyRateArr &&
             buyRateArr.map((rate, i) => {
+              const cardName = rate.Card?.name || rate.id; 
               return (
                 <Row
+                  card_id={rate.id}
                   key={i}
-                  name={rate.card_id}
+                  name={rate.name}
                   qty={rate.qty}
                   price={rate.qty * PRICE}
                   out={rate.qty * PRIZE_MULTIPLE}
+                  socket={socketState}
                 />
-                
               );
             })}
         </tbody>

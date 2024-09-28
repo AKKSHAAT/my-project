@@ -2,12 +2,18 @@ import Card from "../model/Card.js";
 import Parchi from "../model/Parchi.js";
 import sequelize from "../db.js";
 import BuyRate from "../model/BuyRate.js";
+import User from '../model/User.js';
 const cardFactory = async () => {
   try {
     await sequelize.sync({ force: true }); // Use { force: true } to drop and recreate tables
     console.log("Database synced.");
 
     // Create a new user
+    await User.bulkCreate([
+      {id: 123456, sales: 0, points: 10000 , password: 123456},
+      {id: 654321, sales: 0, points: 12034, password: 123456 },
+      {id: 696969, sales: 0, points: 51203, password: 123456 }, 
+    ])
     await Card.bulkCreate([
       { name: "Ganpati Yantra", number: 1, img: "lmao" },
       { name: "Gayatri Yantra", number: 2, img: "lmao" },
@@ -20,30 +26,31 @@ const cardFactory = async () => {
       { name: "VastldoshNiwaran yantra", number: 9, img: "lmao" },
       { name: "Durga Yantra", number: 0, img: "lmao" },
     ]);
-    await Parchi.create({
-      cards: [
-        {
-          id: 1,
-          qty: 22,
-          cost: 242,
-        },
-        {
-          id: 8,
-          qty: 5,
-          cost: 55,
-        },
-      ],
-      total: 297,
-      user_id: null,
-      cashed: false,
-    });
+    // await Parchi.create({
+    //   cards: [
+    //     {
+    //       id: 1,
+    //       qty: 22,
+    //       cost: 242,
+    //     },
+    //     {
+    //       id: 8,
+    //       qty: 5,
+    //       cost: 55,
+    //     },
+    //   ],
+    //   total: 297,
+    //   user_id: null,
+    //   cashed: false,
+    //   totalQty:1
+    // });
     
-    await BuyRate.bulkCreate([
-      {card_id: 1, qty: 22},
-      {card_id: 2, qty: 4},
-      {card_id: 5, qty: 13},
-      {card_id: 6, qty: 2},
-    ]);
+    // await BuyRate.bulkCreate([
+    //   {card_id: 1, qty: 22},
+    //   {card_id: 2, qty: 4},
+    //   {card_id: 5, qty: 13},
+    //   {card_id: 6, qty: 2},
+    // ]);
     // Query all users
     console.log("populated cards");
   } catch (error) {

@@ -1,7 +1,12 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../db.js';
+import dayjs from 'dayjs';
 
-class Parchi extends Model {}
+class Parchi extends Model {
+  getFormattedDate() {
+    return dayjs(this.createdAt).format('YYYY-MM-DD HH:mm:ss');
+  }
+}
 
 Parchi.init({
   cards: {
@@ -29,6 +34,10 @@ Parchi.init({
   cashed: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
+  },
+  totalQty: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   date: {
     type: DataTypes.DATE,

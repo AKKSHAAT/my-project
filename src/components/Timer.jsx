@@ -2,7 +2,7 @@ import axios from "../axios.js";
 import React, { useState, useEffect } from "react";
 
 function Timer({ arr }) {
-  const TIME = 10;
+  const TIME = 900;
   const [timeLeft, setTimeLeft] = useState(TIME); // Start with 15 seconds
   const [win, setWin] = useState(null);
 
@@ -15,7 +15,6 @@ function Timer({ arr }) {
     const res = await axios
       .post("api/history", { card_id: id })
       .then((res) => {
-        console.log(res.data);
       })
       .catch((err) => {
         console.log("err in saving winner:: ", err);

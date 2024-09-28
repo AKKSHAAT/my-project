@@ -1,30 +1,31 @@
-// store/useStore.js
-import create from "zustand";
+import { create } from "zustand";
 
+// Properly pass the store definition to create the Zustand store
+const useParchiStore = create((set) => ({
+  cards: [],
 
-const parchiStore = (set) => ({
-  cards : [],
+  // Update a card by id and update its qty and name
+  updateCard: (id, qty, name) =>
+    set((state) => ({
+      cards: state.cards.map((card) =>
+        card.id === id ? { ...card, qty, name } : card
+      ),
+    })),
 
-  addCard : (card) => {
-    set(state=> ({
-      cards: [card, ...state.cards ],
-    }))
+  // Add a new card with id, qty, and name
+  addCard: (newCard) =>
+    set((state) => ({
+      cards: [...state.cards, newCard],
+    })),
+
+  // Remove card by id
+  removeCard: (cardId) => {
+    set((state) => ({
+      cards: state.cards.filter((c) => c.id !== cardId),
+    }));
   },
 
-  removeCard : (cardId) => {
-    set(state=>({
-      cards : state.cards.filter((c)=> c.id != cardId)
-    }))
-  },
-
-  updateCard: (id, qty) =>
-        set((state) => ({
-          cards: state.cards.map((c) =>
-            c.id === id ? { ...c, qty } : c
-          ),
-        })),
-})
-
-const useParchiStore = create()
+  parchiReset: () => set({ cards: [] }),
+}));
 
 export default useParchiStore;
