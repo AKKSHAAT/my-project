@@ -3,6 +3,7 @@ import Parchi from "../model/Parchi.js";
 import sequelize from "../db.js";
 import BuyRate from "../model/BuyRate.js";
 import User from '../model/User.js';
+import History from "../model/History.js";
 const cardFactory = async () => {
   try {
     await sequelize.sync({ force: true }); // Use { force: true } to drop and recreate tables
@@ -26,32 +27,30 @@ const cardFactory = async () => {
       { name: "VastldoshNiwaran yantra", number: 9, img: "lmao" },
       { name: "Durga Yantra", number: 0, img: "lmao" },
     ]);
-    // await Parchi.create({
-    //   cards: [
-    //     {
-    //       id: 1,
-    //       qty: 22,
-    //       cost: 242,
-    //     },
-    //     {
-    //       id: 8,
-    //       qty: 5,
-    //       cost: 55,
-    //     },
-    //   ],
-    //   total: 297,
-    //   user_id: null,
-    //   cashed: false,
-    //   totalQty:1
-    // });
+    await Parchi.create({
+      cards: [
+        {
+          id: 1,
+          qty: 22,
+          cost: 242,
+        },
+        {
+          id: 8,
+          qty: 5,
+          cost: 55,
+        },
+      ],
+      total: 297,
+      user_id: null,
+      cashOutTime: "08:53",
+      cashed: false,
+      totalQty:1
+    });
     
-    // await BuyRate.bulkCreate([
-    //   {card_id: 1, qty: 22},
-    //   {card_id: 2, qty: 4},
-    //   {card_id: 5, qty: 13},
-    //   {card_id: 6, qty: 2},
-    // ]);
-    // Query all users
+    await History.create( 
+      {card_id: 1, cashOutTime: "08:53"},
+    );
+    
     console.log("populated cards");
   } catch (error) {
     console.error("Error syncing database:", error);

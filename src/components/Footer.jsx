@@ -3,8 +3,10 @@ import useParchiStore from "../store/useStore";
 import axios from "../axios.js";
 import Modal from "./Modal"; // Import Modal component
 import {handleParchiTransaction} from '../transactionService.js'
+import { useNavigate } from "react-router-dom";
 
 export const Footer = () => {
+  const navigate = useNavigate(); 
   const PRICE = 11;
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
   const cards = useParchiStore((state) => state.cards);
@@ -32,7 +34,12 @@ export const Footer = () => {
         total
       }
       const res = await handleParchiTransaction(parchi, user_id);
-      console.log("lucky");
+      if(res.error) {
+        console.log(res.error);
+      } else if(res.message) {
+        navigate(0);
+        console.log(res.message);
+      }
       
     }
     setIsModalOpen(true); // Open the modal

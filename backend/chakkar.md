@@ -1,4 +1,12 @@
-To implement the functionality you described for your betting application, where users can buy slips (parchis) for cards opened at specific times, you'll need a robust approach to manage time, validate purchases, and check winning conditions. Here’s a roadmap to help you achieve this:
+# high pri
+> - Clock Drift or Sync Issues
+If the server time is not perfectly in sync with the client time (e.g., due to clock drift or delays), transactions might be prematurely allowed or disallowed. You might want to synchronize the client time with the server to ensure consistency.
+
+>- To implement the functionality you described for your betting application, where users can buy slips (parchis) for cards opened at specific times, you'll need a robust approach to manage time, validate purchases, and check winning conditions. Here’s a roadmap to help you achieve this:
+
+> #### b. Winning Check Logic
+> - Create a function that checks the `parchis` against the opened card.
+> - Notify users about their winning status through push notifications or updating their dashboard.
 
 ### 1. **Time Management Logic**
 
@@ -30,9 +38,6 @@ To implement the functionality you described for your betting application, where
 - When a card is opened, check if any purchased slips (parchis) correspond to the opened card at the correct time.
 - Store winning statuses in the database linked to each slip.
 
-#### b. Winning Check Logic
-- Create a function that checks the `parchis` against the opened card.
-- Notify users about their winning status through push notifications or updating their dashboard.
 
 ### 4. **Client-Server Synchronization**
 

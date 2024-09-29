@@ -15,7 +15,8 @@ import BuyRate from './model/BuyRate.js';
 import Card from './model/Card.js';
 import History from './model/History.js';
 
-import { checkSessionTime } from './timeService.js';
+import { allowTransactions, countdownProvider, currentCardOpenTime, previousCardTime,} from './timeService.js';
+import dayjs from 'dayjs';
 
 
 const app = express(); 
@@ -33,11 +34,12 @@ const server = app.listen(port, () => {
 // Initialize Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5174", "http://127.0.0.1:5500"],
+    // origin: ["http://localhost:5174", "http://127.0.0.1:5500"],
+    origin: "*"
   },
 });
 
-app.use(checkSessionTime);
+// app.use(checkSessionTime);
 app.use('/api/auth', authRoutes);
 app.use((req, res, next) => {
   req.io = io;
@@ -72,33 +74,38 @@ io.on('connection', async (socket) => {
     console.log("winDAta: ", data);
  
     const wincard = new History({
-      card_id: data.card_id
+      card_id: data.card_id,
+      cashOutTime: currentCardOpenTime.format("hh:mm"),
     })
     const saved = await wincard.save();
-    if(saved) console.log("saved");
+    if(saved) console.log("saved"); 
   })
 });
 
-// Middleware to parse JSON bodies  
+// Middleware to parse JSON bodies   
 cardFactory(); 
-app.use(express.json());
+app.use(express.json()); 
 
 
-
+ 
 // Sync all models 
 app.use(cors());
 app.use(express.json());
-app.use('/api', cardRoutes); 
+app.use('/api', cardRoutes);  
 app.use('/api', historyRoute);   
 app.use('/api/parchi', parchiRoute);
 app.use('/api/buyrate', buyRateRoute); 
 app.use('/api/user', userRoute); 
-app.use('/api/daybill', daybillRoute);
+app.use('/api/daybill', daybillRoute); 
 app.use('/api/transaction', transactionRoutes);
 
 // Define a route   
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
+app.get('/session',(req, res) => {   // TODO:bhai ye firf true bbhejta hai
+  res.send(allowTransactions());
+});
+
+app.get('/api/get-server-time', (req, res) => {
+  res.status(200).json({timeLeft: countdownProvider()});
 });
 
 export { io }; // Export io for use in other files

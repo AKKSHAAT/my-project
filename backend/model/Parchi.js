@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 
 class Parchi extends Model {
   getFormattedDate() {
-    return dayjs(this.createdAt).format('YYYY-MM-DD HH:mm:ss');
+    return dayjs(this.createdAt).format('YYYY-MM-DD');
   }
 }
 
@@ -28,6 +28,10 @@ Parchi.init({
     },
   },
   user_id: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  cashOutTime: {
     type: DataTypes.STRING,
     allowNull: true
   },

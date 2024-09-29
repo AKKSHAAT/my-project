@@ -34,7 +34,8 @@ router.get('/history/:id', async (req, res) => {
 router.post('/history', async (req, res) => {
   try {
     const { card_id } = req.body;  // Destructure the card_id from the request body
-    const newhistory = await History.create({ card_id }); // Pass it as an object
+    const newhistory = await History.create({ card_id, cashOutTime: "8:47" }); // Pass it as an object
+    console.log("added history");
     res.status(201).json(newhistory);
   } catch (err) {
     res.status(400).json({ error: 'Error creating history' });
