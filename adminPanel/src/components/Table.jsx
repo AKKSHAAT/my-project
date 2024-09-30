@@ -11,7 +11,8 @@ export const Table = () => {
   const [socketState, setSocketState] = useState(null);
 
   useEffect(() => {
-    const socket = io("http://192.168.227.17:6969"); // Ensure the URL and port are correct
+    // const socket = io("http://192.168.29.48:6969/"); // Ensure the URL and port are correct
+    const socket = io('http://localhost:6969/');
     setSocketState(socket);
     // Listen for buy rate updates
     socket.on("buyRateUpdate", (data) => {

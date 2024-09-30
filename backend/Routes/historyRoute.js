@@ -1,8 +1,10 @@
 import History from '../model/History.js';
 import Card from '../model/Card.js';
 import express from 'express';
+import { Op } from 'sequelize';
 const router = express.Router();
 
+import { currentCardOpenTime } from '../timeService.js';
 // Get all history
 router.get('/history', async (req, res) => {
   try {
@@ -15,6 +17,69 @@ router.get('/history', async (req, res) => {
     res.status(500).json({ error: 'Error fetching history' });
   }
 });  
+
+
+
+router.get('/history/now', async (req, res) => {
+  try {
+    const winningCard = await History.findOne({
+      where: { cashOutTime: currentCardOpenTime.format("HH:mm")} ,
+      include: { model: Card, attributes: ['name', 'number'] } // Include the Card model and only fetch the 'name'
+    });
+
+    if(winningCard) {
+      res.json(winningCard);
+    } else{
+      res.json({messege: "winning card not out yet"})
+    }
+  } catch (err) {
+    console.log("err",err);
+    res.status(500).json({ error: 'Error fetching history' });
+  }
+});  
+
+
+
+router.get('/history/before', async (req, res) => {
+  try {
+    const currentTime = currentCardOpenTime.format("HH:mm");
+    console.log("Current Time:", currentTime); 
+    // const winningCards = await History.findAll({
+    //   where: {
+    //     cashOutTime: { 
+    //       [Op.lt]: currentTime // Use Sequelize's operators to find entries before current time
+    //     }
+    //   }, 
+    //   include: {
+    //     model: Card,
+    //     attributes: ['name', 'number'] // Include the Card model and fetch 'name' and 'number'
+    //   }
+    // });
+
+    const winningCards = await History.findAll({
+      where: {
+        cashOutTime: {
+          [Op.lt]: currentTime
+        } 
+      },
+      include: {
+        model: Card,
+        attributes: ['name', 'number']
+      }
+    });
+
+    if (winningCards.length > 0) {
+      res.json(winningCards);
+    } else {
+      res.json({success:false, message: "No winning cards found before the current time." });
+    }
+  } catch (err) {
+    console.log("Error fetching history:", err);
+    res.status(500).json({ error: 'Error fetching history' });
+  }
+});
+
+
 
 // Get a history by ID
 router.get('/history/:id', async (req, res) => {

@@ -14,11 +14,7 @@ export const handleParchiTransaction = async (parchi, userId) => {
   }
   try {
     // Step 0.5: Update User points and sales send userid and currentParchi.total
-    const salesResponse = await axios.post(`/api/user/${userId}/sales`, {
-      total: parchi.total,
-    });
-    console.log("BuyRate updated:", salesResponse.data);
-
+    const salesResponse = await axios.post(`/api/user/${userId}/sales`, {total: parchi.total,})
     // Step 1: save Da parchi;
     const parchiResponse = await axios.post(`/api/parchi`, {
       cards: parchi.cards,

@@ -42,7 +42,7 @@ function Timer({ arr }) {
         console.log("Timer reached 0, resetting to 900 seconds.");
         setTimeLeft(TIME); // Reset time for the next round
       }
-      console.log("timeLeft: ", timeLeftRef.current);
+      // console.log("timeLeft: ", timeLeftRef.current);
     }, 1000);
 
     return () => clearInterval(timerInterval); // Cleanup the interval on unmount

@@ -2,7 +2,7 @@ import {Model, DataTypes} from 'sequelize';
 import sequelize  from '../db.js';
 
 class History extends Model {
-  getFormattedDate() {
+  getFormattedDate() { 
     return dayjs(this.createdAt).format('YYYY-MM-DD');
   }
 }

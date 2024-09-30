@@ -17,6 +17,10 @@ BuyRate.init({
     type: DataTypes.TINYINT,
     allowNull: false,
   },
+  cashOutTime: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
 }, {
   sequelize,
   modelName: 'BuyRate'

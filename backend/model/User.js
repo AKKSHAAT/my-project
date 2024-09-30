@@ -36,6 +36,10 @@ User.init({
     allowNull: false,
     defaultValue: 0,
   },
+  admin: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  }
 }, {
   sequelize,
   modelName: 'User'

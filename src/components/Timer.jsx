@@ -13,9 +13,12 @@ function Timer({ arr }) {
     const fetchServerTime = async () => {
       try {
         const response = await axios.get("/api/get-server-time");
-        const serverTimeInSeconds = response.data.timeLeft;
-        setTimeLeft(serverTimeInSeconds); // Update time from server
-        console.log("fetched time from server: ", serverTimeInSeconds);
+        if(response.status == 200) {
+          const serverTimeInSeconds = response.data.timeLeft;
+          setTimeLeft(serverTimeInSeconds); // Update time from server
+        } else {
+          console.log("cant fetch time from server", response);
+        }
       } catch (error) {
         console.error("Error fetching server time:", error);
       }
@@ -23,11 +26,6 @@ function Timer({ arr }) {
 
     fetchServerTime();
   }, []); // Fetch the server time once when the component mounts
-
-  function getRandomElement(arr) {
-    const randomIndex = Math.floor(Math.random() * arr.length);
-    return arr[randomIndex];
-  }
 
   async function saveWinner(id) {
     await axios.post("api/history", { card_id: id });
@@ -42,7 +40,7 @@ function Timer({ arr }) {
         console.log("Timer reached 0, resetting to 900 seconds.");
         setTimeLeft(TIME); // Reset time for the next round
       }
-      console.log("timeLeft: ", timeLeftRef.current);
+      // console.log("timeLeft: ", timeLeftRef.current);
     }, 1000);
 
     return () => clearInterval(timerInterval); // Cleanup the interval on unmount
@@ -60,6 +58,7 @@ function Timer({ arr }) {
       <h1 className="text-lg font-semibold">
         Time Left: {minutes}:{formattedSeconds}
       </h1>
+      
       {timeLeft <= 0 && <h2>Time's up!</h2>}
     </div>
   );

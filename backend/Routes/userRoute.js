@@ -3,10 +3,14 @@ import express from 'express';
 import User from '../model/User.js'; // Adjust the path as necessary
 import Transaction from '../model/Transaction.js'; // Import the Transaction model
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
+
 const router = express.Router();
 
-const JWT_SECRET = 'your_jwt_secret'; // Change this to a strong secret key
+const SECRET_KEY = process.env.SECRET_KEY; // Change this to a strong secret key
 // Route to get user by ID
+
 
 router.get('/:id', async (req, res) => {
   const userId = req.params.id;
@@ -79,7 +83,7 @@ router.post('/login', async (req, res) => {
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-
+    console.log("SECRET_KEY", SECRET_KEY);
     // Compare password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
@@ -87,9 +91,22 @@ router.post('/login', async (req, res) => {
     }
 
     // Create JWT token
-    const token = jwt.sign({ id: user.id }, JWT_SECRET); // Set expiresIn if you want a time limit
+    const token = jwt.sign({ id: user.id }, SECRET_KEY); 
 
     return res.status(200).json({ message: 'Login successful', token , id:user.id});
+  } catch (error) {
+    console.error('Error logging in:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.post('/create-agent-acc', async (req, res) => {
+  const { id, password, points } = req.body;
+  
+  try {
+    const user = await User.create({id, password, points});
+    console.log("user created: ", user.id, user.password);
+    return res.status(200).json({ message: 'userCreated'});
   } catch (error) {
     console.error('Error logging in:', error);
     return res.status(500).json({ error: 'Internal Server Error' });

@@ -6,10 +6,13 @@ import History from "../model/History.js";
 import { checkSessionTime, nextCardOpenTime, currentCardOpenTime } from "../timeService.js";
 import sequelize from "../db.js";
 import { Op } from "sequelize";
+import { authMiddleware } from "../auth.js";
+import {generateReceipt} from '../parchiUtils.js';
 
 const WINNING_MULTIPLE = 10;
-
 const router = express.Router();
+
+// router.use(authMiddleware); 
 
 function calculateTotalQty(cards) {
   // Initialize total quantity to zero
@@ -49,7 +52,7 @@ router.post("/",checkSessionTime , async (req, res) => {
       cards,
       total,
       user_id,
-      cashOutTime: currentCardOpenTime.format("hh:mm"),
+      cashOutTime: currentCardOpenTime.format("HH:mm"),
       totalQty: calculateTotalQty(cards),
     });
 
@@ -171,5 +174,25 @@ router.get("/:id", async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+
+
+router.get("/make-receipt/:id", async (req, res) => {
+  const parchiId = req.params.id;
+  try {
+    const parchi = await Parchi.findByPk(parchiId);
+    console.log("parchi:: ", parchi, "parchiId:: ", parchiId);
+
+    if (!parchi) return res.status(404).json({ error: "Parchi not found" });
+
+    const receipt = generateReceipt(parchi);
+    return res.status(200).json({success: true, receipt});
+  } catch (error) {
+    console.error("Error fetching parchi:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 
 export default router;

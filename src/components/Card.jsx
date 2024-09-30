@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useParchiStore from "../store/useStore";
 
-const Card = ({ card, input = false }) => {
+const Card = ({ card, input = false , time=null}) => {
   const parchi = useParchiStore.getState();
 
   // Initialize with existing card qty or default to an empty string
@@ -49,6 +49,7 @@ const Card = ({ card, input = false }) => {
         <div className="flex-1 flex flex-col justify-end font-semibold text-sm pb-2">
           <p>{card.name}</p>
           <p className="text-blue-600">{card.number}</p>
+      {time ? <p className="text-white bg-black">Time: {time}</p> : ""}
         </div>
       </div>
       {input ? (

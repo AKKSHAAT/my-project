@@ -13,7 +13,7 @@ const Row = ( {card_id, name, qty, price, out, socket}) => {
         scope="row"
         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
       >
-        {name}
+        {name} No.{card_id}
       </th>
 
       <td className="px-6 py-4">{qty}</td>

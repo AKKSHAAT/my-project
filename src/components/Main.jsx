@@ -7,6 +7,7 @@ import { Footer } from "./Footer.jsx";
 import { HistoryList } from "./HistoryList.jsx";
 import Card from "./Card.jsx";
 import useParchiStore from "../store/useStore.js";
+import Notification from "./Notification.jsx";
 
 export const Main = () => {
   const [cardsArr, setCardsArr] = useState([]);
@@ -30,6 +31,7 @@ export const Main = () => {
         <section className="grid grid-cols-4 gap-1">
           <div className="border-2 border-white rounded-lg col-span-1 h-[60dvh]">
             <Timer arr={cardsArr} />
+            <Notification cards={cardsArr}/>
           </div>
           <div className="border-2 border-white rounded-lg col-span-3">
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-4 p-2">

@@ -9,6 +9,7 @@ export const Footer = () => {
   const navigate = useNavigate(); 
   const PRICE = 11;
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  const [err, setErr] = useState(null); 
   const cards = useParchiStore((state) => state.cards);
 
 
@@ -34,9 +35,9 @@ export const Footer = () => {
         total
       }
       const res = await handleParchiTransaction(parchi, user_id);
-      if(res.error) {
-        console.log(res.error);
-      } else if(res.message) {
+      if(res.error || res.success == false) {
+        setErr('Request failed');
+      } else if(res.message || res.success == true) {
         navigate(0);
         console.log(res.message);
       }
@@ -67,6 +68,10 @@ export const Footer = () => {
       {/* Modal to display cards */}
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <h2 className="text-2xl font-bold mb-4">Cards</h2>
+        {err && 
+          <p className="text-2xl text-red-400 font-bold">
+            ⚠️ {err}
+          </p>}
         {cards.length > 0 ? (
           <ul>
             {cards.map((card) => (

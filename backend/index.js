@@ -15,8 +15,11 @@ import BuyRate from './model/BuyRate.js';
 import Card from './model/Card.js';
 import History from './model/History.js';
 
-import { allowTransactions, countdownProvider, currentCardOpenTime, previousCardTime,} from './timeService.js';
+
+
+import { allowTransactions, countdownProvider, currentCardOpenTime} from './timeService.js';
 import dayjs from 'dayjs';
+import { authMiddleware } from './auth.js';
 
 
 const app = express(); 
@@ -69,33 +72,67 @@ io.on('connection', async (socket) => {
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });
-
-  socket.on('win', async (data)=>{
-    console.log("winDAta: ", data);
  
-    const wincard = new History({
-      card_id: data.card_id,
-      cashOutTime: currentCardOpenTime.format("hh:mm"),
-    })
-    const saved = await wincard.save();
-    if(saved) console.log("saved"); 
-  })
+  socket.on('win', async (data) => {
+
+    const cashOutTime = currentCardOpenTime.format("HH:mm");
+    const existingWinningCard = await History.findOne({
+      where: { cashOutTime: cashOutTime },
+    });
+  
+    if (existingWinningCard) {
+      existingWinningCard.card_id = data.card_id; 
+  
+      const updatedCard = await existingWinningCard.save();
+      if (updatedCard) {
+        console.log("Updated existing winning card:", updatedCard);
+      }
+    } else {
+
+      const wincard = new History({
+        card_id: data.card_id,
+        cashOutTime: cashOutTime,
+      });
+  
+      const saved = await wincard.save();
+      if (saved) {
+        console.log("Saved new winning card:", saved);
+      }
+    }
+  });  
 });
 
 // Middleware to parse JSON bodies   
 cardFactory(); 
 app.use(express.json()); 
-
-
  
 // Sync all models 
-app.use(cors());
+// app.use(cors({
+//   origin: 'http://localhost:5173'  // Allow requests from this origin (React app)
+// }));
+
+app.use(cors({
+  origin: '*',  // Allow all origins (risky for sensitive data)
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Restrict allowed methods if necessary
+}));
+
 app.use(express.json());
+app.options('*', cors());  // Enable preflight requests for all routes
+
+app.use('/api/user', userRoute); 
+
+
+app.use(authMiddleware);
+
+app.get('/api/get-server-time', (req, res) => {
+  res.status(200).json({timeLeft: countdownProvider()});
+  console.log("timeSent:  ", countdownProvider());
+});
+
 app.use('/api', cardRoutes);  
 app.use('/api', historyRoute);   
 app.use('/api/parchi', parchiRoute);
 app.use('/api/buyrate', buyRateRoute); 
-app.use('/api/user', userRoute); 
 app.use('/api/daybill', daybillRoute); 
 app.use('/api/transaction', transactionRoutes);
 
@@ -104,8 +141,5 @@ app.get('/session',(req, res) => {   // TODO:bhai ye firf true bbhejta hai
   res.send(allowTransactions());
 });
 
-app.get('/api/get-server-time', (req, res) => {
-  res.status(200).json({timeLeft: countdownProvider()});
-});
 
 export { io }; // Export io for use in other files

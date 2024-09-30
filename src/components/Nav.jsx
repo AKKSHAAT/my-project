@@ -4,6 +4,7 @@ import axios from '../axios.js';
 
 export const Nav = () => {
   const [user, setUser] = useState({id:"not found", points:"n/a"});
+  const [err, setErr] = useState("");
 
   const fetchUser = async ()=>{
     try {
@@ -21,6 +22,10 @@ export const Nav = () => {
   return (
     <nav className='flex justify-between border border-white p-2 mb-1 rounded-lg '>
         <p className='pr-10'>points: {user.points}</p>
+
+        <div>
+          <p>{err}</p>
+        </div>
     <div className='flex justify-between'>
         <a>userID: {user.id}</a>
         
