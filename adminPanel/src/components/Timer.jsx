@@ -12,7 +12,7 @@ function Timer({ arr }) {
   useEffect(() => {
     const fetchServerTime = async () => {
       try {
-        const response = await axios.get("/api/get-server-time");
+        const response = await axios.get("api/get-server-time");
         const serverTimeInSeconds = response.data.timeLeft;
         setTimeLeft(serverTimeInSeconds); // Update time from server
         console.log("fetched time from server: ", serverTimeInSeconds);

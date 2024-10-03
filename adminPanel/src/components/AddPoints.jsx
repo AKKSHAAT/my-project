@@ -12,7 +12,7 @@ const AddPoints = () => {
   const handleUserCheck = async () => {
     setErr('');setMsg('');
     try {
-      const response = await axios.get(`/api/user/${userId}`); // Fetch user details
+      const response = await axios.get(`api/user/${userId}`); // Fetch user details
       console.log(response.data);
       if (response.data) {
         setMsg('user found ✅')

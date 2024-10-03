@@ -27,7 +27,7 @@ export const Main = () => {
 
   const fetchCards = async () => {
     try {
-      const response = await axios.get("/api/cards");
+      const response = await axios.get("api/cards");
       console.log("cards array respnse: ", response);
       setCardsArr(response.data); // Use response.data
     } catch (error) {

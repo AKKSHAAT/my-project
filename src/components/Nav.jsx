@@ -8,7 +8,7 @@ export const Nav = () => {
 
   const fetchUser = async ()=>{
     try {
-      const response = await axios.get(`/api/user/${localStorage.getItem('id')}`);
+      const response = await axios.get(`api/user/${localStorage.getItem('id')}`);
       setUser(response.data); // Use response.data
     } catch (error) {
       console.error("Error fetching user:", error);

@@ -2,7 +2,7 @@ import Axios from 'axios';
 
 const axios = Axios.create({
   // baseURL: 'http://localhost:6969',  // Ensure to replace with your production baseURL
-  baseURL: 'https://my-project-cii4.onrender.com',
+  baseURL: 'https://my-project-cii4.onrender.com/',
   timeout: 50000,
 });
 
