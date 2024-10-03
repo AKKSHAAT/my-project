@@ -9,9 +9,9 @@ import Daybill from "./Daybill.js";
 
 Daybill.belongsTo(User, { foreignKey: "user_id", });
 
-BuyRate.belongsTo(Card, {foreignKey: "id", targetKey: "id", });
+BuyRate.belongsTo(Card, {foreignKey: "card_id", targetKey: "id", });
 
-Card.hasOne(BuyRate, { foreignKey: "id", });
+Card.hasOne(BuyRate, { foreignKey: "card_id", });
 Card.hasMany(History, { foreignKey: "card_id" });
 
 User.hasMany(Daybill, { foreignKey: "user_id" });

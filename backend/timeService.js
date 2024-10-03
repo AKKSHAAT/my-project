@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 import { extensions } from "sequelize/lib/utils/validator-extras";
 
-export const SESSION_START = dayjs().hour(8).minute(30).second(0);
-export const SESSION_END = dayjs().hour(23).minute(0).second(0);
+export const SESSION_START = dayjs().hour(0).minute(0).second(0);
+export const SESSION_END = dayjs().hour(24).minute(0).second(0);
 
 const INTERVAL_MINUTES = 15;
 

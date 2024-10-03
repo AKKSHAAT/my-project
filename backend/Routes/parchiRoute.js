@@ -37,7 +37,7 @@ function calculateTotalQty(cards) {
 // Route to create a new Parchi
 router.post("/",checkSessionTime , async (req, res) => {
   const { cards, total, user_id } = req.body;
-
+  console.log(user_id);
   if (!Array.isArray(cards) || cards.length === 0) {
     return res.status(400).json({ error: "Cards should be a non-empty array" });
   }

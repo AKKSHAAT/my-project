@@ -37,7 +37,7 @@ export const Footer = () => {
       const res = await handleParchiTransaction(parchi, user_id);
       if(res.error || res.success == false) {
         setErr('Request failed');
-      } else if(res.message || res.success == true) {
+      } else if(res.success == true) {
         navigate(0);
         console.log(res.message);
       }

@@ -31,16 +31,16 @@ const cardFactory = async () => {
       { name: "Durga Yantra", number: 0, img: "lmao" },
     ]);
     await BuyRate.bulkCreate([
-      { id: 1, name: "Ganpati Yantra", cashOutTime:"17:45", qty:0 },
-      { id: 2, name: "Gayatri Yantra", cashOutTime:"17:45", qty:0 },
-      { id: 3, name: "Hanumanji Yantra", cashOutTime:"17:45", qty:0 },
-      { id: 4, name: "Kalsharp Yantra", cashOutTime:"17:45",qty:0 },
-      { id: 5, name: "Shani Yantra", cashOutTime:"17:45", qty:0 },
-      { id: 6, name: "Shree Yantra", cashOutTime:"17:45", qty:0 },
-      { id: 7, name: "Surya Yantra", cashOutTime:"17:45", qty:0 },
-      { id: 8, name: "Vasikaran Yantra", cashOutTime:"17:45", qty:0 },
-      { id: 9, name: "VastldoshNiwaran", cashOutTime:"17:45", qty:0 },
-      { id: 10, name: "Durga Yantra", cashOutTime:"17:45", qty:0 },
+      { card_id: 1, name: "Ganpati Yantra", cashOutTime:"17:45", qty:0 },
+      { card_id: 2, name: "Gayatri Yantra", cashOutTime:"17:45", qty:0 },
+      { card_id: 3, name: "Hanumanji Yantra", cashOutTime:"17:45", qty:0 },
+      { card_id: 4, name: "Kalsharp Yantra", cashOutTime:"17:45",qty:0 },
+      { card_id: 5, name: "Shani Yantra", cashOutTime:"17:45", qty:0 },
+      { card_id: 6, name: "Shree Yantra", cashOutTime:"17:45", qty:0 },
+      { card_id: 7, name: "Surya Yantra", cashOutTime:"17:45", qty:0 },
+      { card_id: 8, name: "Vasikaran Yantra", cashOutTime:"17:45", qty:0 },
+      { card_id: 9, name: "VastldoshNiwaran", cashOutTime:"17:45", qty:0 },
+      { card_id: 10, name: "Durga Yantra", cashOutTime:"17:45", qty:0 },
     ]);
     await Parchi.create({
       cards: [ 

@@ -1,17 +1,17 @@
-import {Model, DataTypes} from 'sequelize';
-import sequelize  from '../db.js';
-   
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../db.js';
+
 class BuyRate extends Model {}
-//NOTE bhai ye card_id hai yaad rakhio
+
 BuyRate.init({
-  id: {
-    type: DataTypes.STRING, 
+  card_id: {
+    type: DataTypes.STRING,
     allowNull: false,
-    primaryKey: true
+    
   },
   name: {
     type: DataTypes.STRING,
-    allowNull:false,
+    allowNull: false,
   },
   qty: {
     type: DataTypes.TINYINT,
@@ -19,12 +19,17 @@ BuyRate.init({
   },
   cashOutTime: {
     type: DataTypes.STRING,
-    allowNull: true
+    allowNull: true,
   },
-  
 }, {
   sequelize,
-  modelName: 'BuyRate'
+  modelName: 'BuyRate',
+  indexes: [
+    {
+      unique: true,
+      fields: ['id', 'cashOutTime'],  // Ensures the combination of id and cashOutTime is unique
+    },
+  ],
 });
 
-export default BuyRate; 
+export default BuyRate;

@@ -1,6 +1,6 @@
 import express from 'express';
 import BuyRate from '../model/BuyRate.js'; // Import the BuyRate model
-import { Op } from 'sequelize';
+import { Op, where } from 'sequelize';
 import { io } from '../index.js';
 import { currentCardOpenTime } from '../timeService.js';
 
@@ -45,7 +45,7 @@ router.get('/', async (req, res) => {
 // Get a single BuyRate by ID
 router.get('/:id', async (req, res) => {
   try {
-    const buyRate = await BuyRate.findByPk(req.params.id);
+    const buyRate = await BuyRate.findOne({ where:{card_id: id} });
     if (!buyRate) {
       return res.status(404).json({ message: 'BuyRate not found' });
     }
@@ -60,33 +60,35 @@ router.post('/', async (req, res) => {
   try {
     const { cards } = req.body;
     const cashOutTime = currentCardOpenTime.format("HH:mm");
-    console.log(":::::::::::recived cards:::::::::::: ", cards[0]);
+
+    console.log(":::::::::::received cards:::::::::::: ", cards[0]);
+
     const promises = cards.map(async (card) => {
       const { id, qty, name } = card;
+
+      // Search for BuyRate with both id and cashOutTime
       const existingBuyRate = await BuyRate.findOne({ 
-        where: { 
-          id ,
-          cashOutTime
-        }});
+        where: { card_id: id, cashOutTime }
+      });
 
       if (existingBuyRate) {
+        // If found, update qty
         existingBuyRate.qty += qty;
         await existingBuyRate.save();
         return existingBuyRate;
       } else {
-        const newBuyRate = await BuyRate.create({ id, qty , name});
-        return newBuyRate; 
+        // If not found, create a new record with id and cashOutTime
+        const newBuyRate = await BuyRate.create({ card_id: id, qty, name, cashOutTime });
+        return newBuyRate;
       }
     });
 
     const results = await Promise.all(promises);
-    console.log(">>>>>>>>>>>done w promise: ", results);
-    req.io.emit('buyRateUpdate', results); // Ensure consistency
+    res.status(200).json(results);
 
-    res.status(201).json({results});
   } catch (error) {
-    console.log("Error:", error);
-    res.status(500).json({ message: 'Error processing buy rates', error });
+    console.error("Error: ", error);
+    res.status(500).json({ error: "An error occurred while processing cards." });
   }
 });
 
@@ -100,7 +102,7 @@ router.put('/:id', async (req, res) => {
       return res.status(404).json({ message: 'BuyRate not found' });
     }
 
-    await buyRate.update({ id, qty });
+    await buyRate.update({ card_id :id, qty });
     res.json(buyRate);
   } catch (error) {
     res.status(500).json({ message: 'Error updating buy rate', error });
@@ -110,7 +112,7 @@ router.put('/:id', async (req, res) => {
 // Delete a BuyRate by ID
 router.delete('/:id', async (req, res) => {
   try {
-    const buyRate = await BuyRate.findByPk(req.params.id);
+    const buyRate = await BuyRate.findOne({where: {card_id: id}});
 
     if (!buyRate) {
       return res.status(404).json({ message: 'BuyRate not found' });
