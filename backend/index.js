@@ -31,14 +31,7 @@ const port = process.env.PORT || 6969;
 const SESSION_START_TIME = "08:00"; // 8 AM session start time
 const INTERVAL_MINUTES = 15; // Cards open every 15 minutes
 
-// Initialize Socket.IO
-const io = new Server(server, {
-  cors: {
-    // origin: ["http://localhost:5174", "http://127.0.0.1:5500"],
-    origin: "*",
-  },
-});
-
+// CORS setup
 app.use(
   cors({
     origin: "*", // Allow all origins (risky for sensitive data)
@@ -46,13 +39,21 @@ app.use(
   })
 );
 
-// Initialize Socket.IO first
+app.use(express.json());
+app.options("*", cors()); // Enable preflight requests for all routes
+
+// Create the server and initialize Socket.IO
 const server = app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
 
-// app.use(checkSessionTime);
-app.use("/api/auth", authRoutes);
+const io = new Server(server, {
+  cors: {
+    origin: "*", // Allow all origins
+  },
+});
+
+// Attach io to requests
 app.use((req, res, next) => {
   req.io = io;
   next();
@@ -90,7 +91,6 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("win", async (data) => {
-    //TODO: if !data.cardname fetch cardname;
     const cashOutTime = currentCardOpenTime.format("HH:mm");
     const existingWinningCard = await History.findOne({
       where: { cashOutTime: cashOutTime },
@@ -98,7 +98,6 @@ io.on("connection", async (socket) => {
 
     if (existingWinningCard) {
       existingWinningCard.card_id = data.card_id;
-
       const updatedCard = await existingWinningCard.save();
       if (updatedCard) {
         console.log("Updated existing winning card:", updatedCard);
@@ -108,7 +107,6 @@ io.on("connection", async (socket) => {
         card_id: data.card_id,
         cashOutTime: cashOutTime,
       });
-
       const saved = await wincard.save();
       if (saved) {
         console.log("Saved new winning card:", saved);
@@ -121,23 +119,9 @@ io.on("connection", async (socket) => {
 cardFactory();
 app.use(express.json());
 
-// Sync all models
-// app.use(cors({
-//   origin: 'http://localhost:5173'  // Allow requests from this origin (React app)
-// }));
-
-app.use(express.json());
-app.options("*", cors()); // Enable preflight requests for all routes
-
+// API routes
+app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoute);
-
-// app.use(authMiddleware);
-
-app.get("/api/get-server-time", (req, res) => {
-  res.status(200).json({ timeLeft: countdownProvider() });
-  console.log("timeSent:  ", countdownProvider());
-});
-
 app.use("/api", cardRoutes);
 app.use("/api", historyRoute);
 app.use("/api/parchi", parchiRoute);
@@ -145,9 +129,14 @@ app.use("/api/buyrate", buyRateRoute);
 app.use("/api/daybill", daybillRoute);
 app.use("/api/transaction", transactionRoutes);
 
-// Define a route
+// Server time route
+app.get("/api/get-server-time", (req, res) => {
+  res.status(200).json({ timeLeft: countdownProvider() });
+  console.log("timeSent:  ", countdownProvider());
+});
+
+// Session route
 app.get("/session", (req, res) => {
-  // TODO:bhai ye firf true bbhejta hai
   res.send(allowTransactions());
 });
 
