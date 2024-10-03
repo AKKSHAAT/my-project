@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from '../axios';
-// const { ipcRenderer } = window.require('electron');  // Import ipcRenderer for communication
+const { ipcRenderer } = window.require('electron');  // Import ipcRenderer for communication
 
 export const Receipt = () => {
   const [receipt, setReceipt] = useState('');

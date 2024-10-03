@@ -41,7 +41,7 @@ export const Table = () => {
         // Otherwise, merge the new data with the existing rows
         setRows((prevRows) =>
           prevRows.map((row) => {
-            const updatedRow = data.find((newData) => newData.id === row.id);
+            const updatedRow = data.find((newData) => newData.card_id === row.id);
             return updatedRow ? { ...row, qty: updatedRow.qty } : row;
           })
         );
@@ -81,7 +81,7 @@ export const Table = () => {
           {rows && rows.length > 0 ? (
             rows.map((rate, i) => (
               <Row
-                card_id={rate.id}
+                card_id={rate.card_id}
                 key={i}
                 name={rate.name}
                 qty={rate.qty}

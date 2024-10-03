@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const Row = ({ card_id, name, qty, totalQty, price, out, socket }) => {
-  cosnt [manualWin , setManualWin] = useState('');
+  const [manualWin , setManualWin] = useState('');
   const handleClick = () => {
     socket.emit("win", { card_id, name });
     console.log(socket);
