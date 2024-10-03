@@ -210,21 +210,21 @@ router.get("/:id", async (req, res) => {
 
 
 
-router.get("/make-receipt/:id", async (req, res) => {
-  const parchiId = req.params.id;
-  try {
-    const parchi = await Parchi.findByPk(parchiId);
-    console.log("parchi:: ", parchi, "parchiId:: ", parchiId);
+  router.get("/make-receipt/:id", async (req, res) => {
+    const parchiId = req.params.id;
+    try {
+      const parchi = await Parchi.findByPk(parchiId);
+      console.log("parchi:: ", parchi, "parchiId:: ", parchiId);
 
-    if (!parchi) return res.status(404).json({ error: "Parchi not found" });
+      if (!parchi) return res.status(404).json({ error: "Parchi not found" });
 
-    const receipt = generateReceipt(parchi);
-    return res.status(200).json({success: true, receipt});
-  } catch (error) {
-    console.error("Error fetching parchi:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+      const receipt = generateReceipt(parchi);
+      return res.status(200).json({success: true, receipt});
+    } catch (error) {
+      console.error("Error fetching parchi:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
 
 
 
