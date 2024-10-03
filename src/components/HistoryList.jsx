@@ -27,7 +27,7 @@ export const HistoryList = () => {
 
     const interval = setInterval(() => {
       fetchHistory();
-    }, 4000);
+    }, 2000);
     return () => clearInterval(interval);
 
   }, []);

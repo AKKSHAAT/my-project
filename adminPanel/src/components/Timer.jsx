@@ -57,7 +57,7 @@ function Timer({ arr }) {
 
   return (
     <div className="p-2">
-      <h1 className="text-lg font-semibold">
+      <h1 className="text-2xl font-semibold">
         Time Left: {minutes}:{formattedSeconds}
       </h1>
       {timeLeft <= 0 && <h2>Time's up!</h2>}

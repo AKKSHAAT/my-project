@@ -2,6 +2,7 @@ import express from 'express';
 import BuyRate from '../model/BuyRate.js'; // Import the BuyRate model
 import { Op } from 'sequelize';
 import { io } from '../index.js';
+import { currentCardOpenTime } from '../timeService.js';
 
 
 // TODO::errors are probably because of id
@@ -58,10 +59,15 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { cards } = req.body;
+    const cashOutTime = currentCardOpenTime.format("HH:mm");
     console.log(":::::::::::recived cards:::::::::::: ", cards[0]);
     const promises = cards.map(async (card) => {
       const { id, qty, name } = card;
-      const existingBuyRate = await BuyRate.findOne({ where: { id } });
+      const existingBuyRate = await BuyRate.findOne({ 
+        where: { 
+          id ,
+          cashOutTime
+        }});
 
       if (existingBuyRate) {
         existingBuyRate.qty += qty;
@@ -69,11 +75,12 @@ router.post('/', async (req, res) => {
         return existingBuyRate;
       } else {
         const newBuyRate = await BuyRate.create({ id, qty , name});
-        return newBuyRate;
+        return newBuyRate; 
       }
     });
 
     const results = await Promise.all(promises);
+    console.log(">>>>>>>>>>>done w promise: ", results);
     req.io.emit('buyRateUpdate', results); // Ensure consistency
 
     res.status(201).json({results});

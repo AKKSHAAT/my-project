@@ -10,13 +10,13 @@ const cardFactory = async () => {
     await sequelize.sync({ force: true }); // Use { force: true } to drop and recreate tables
     console.log("Database synced.");
 
-    await Blacklist.create({user_id:1});
+    
     // Create a new user
     await User.bulkCreate([
-      {id: 123456, sales: 0, points: 10000 , password: 123456},
+      {id: 123456, sales: 0, points: 10000 , password: 123456, admin: 1},
       {id: 654321, sales: 0, points: 12034, password: 123456 },
       {id: 696969, sales: 0, points: 51203, password: 123456 }, 
-      {id: 1, sales: 0, points: 51203, password: 1, admin: 1 }, 
+      // {id: 1, sales: 0, points: 51203, password: 1, admin: 1 }, 
     ])
     await Card.bulkCreate([
       { name: "Ganpati Yantra", number: 1, img: "lmao" },
@@ -30,8 +30,41 @@ const cardFactory = async () => {
       { name: "VastldoshNiwaran yantra", number: 9, img: "lmao" },
       { name: "Durga Yantra", number: 0, img: "lmao" },
     ]);
+    await BuyRate.bulkCreate([
+      { id: 1, name: "Ganpati Yantra", cashOutTime:"17:45", qty:0 },
+      { id: 2, name: "Gayatri Yantra", cashOutTime:"17:45", qty:0 },
+      { id: 3, name: "Hanumanji Yantra", cashOutTime:"17:45", qty:0 },
+      { id: 4, name: "Kalsharp Yantra", cashOutTime:"17:45",qty:0 },
+      { id: 5, name: "Shani Yantra", cashOutTime:"17:45", qty:0 },
+      { id: 6, name: "Shree Yantra", cashOutTime:"17:45", qty:0 },
+      { id: 7, name: "Surya Yantra", cashOutTime:"17:45", qty:0 },
+      { id: 8, name: "Vasikaran Yantra", cashOutTime:"17:45", qty:0 },
+      { id: 9, name: "VastldoshNiwaran", cashOutTime:"17:45", qty:0 },
+      { id: 10, name: "Durga Yantra", cashOutTime:"17:45", qty:0 },
+    ]);
     await Parchi.create({
-      cards: [
+      cards: [ 
+        {
+          id: 1,
+          qty: 22,
+          cost: 242,
+          name: "lmao",
+        },
+        {
+          id: 8,
+          qty: 5,
+          cost: 55,
+          name: "lol",
+        },
+      ],
+      total: 297,
+      user_id: null,
+      cashOutTime: "08:53",
+      cashed: false,
+      totalQty:1
+    });
+    await Parchi.create({
+      cards: [ 
         {
           id: 1,
           qty: 22,
@@ -52,6 +85,7 @@ const cardFactory = async () => {
       totalQty:1
     });
     
+    await Blacklist.create({user_id:1});
     await History.bulkCreate([
       {card_id: 1, cashOutTime: "08:45"},
       {card_id: 1, cashOutTime: "09:00"},

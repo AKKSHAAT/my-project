@@ -3,21 +3,24 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "electron/main.js",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
+    "electron-dev": "concurrently \"pnpm run dev\" \"wait-on http://localhost:5173 && electron .\"",
+    "electron-pack": "vite build && electron-builder",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
+    "electron-is-dev": "^3.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",
     "receiptline": "^1.16.1",
     "sequelize": "^6.37.3",
-    "sqlite3": "^5.1.7",
     "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
@@ -26,7 +29,9 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
+    "concurrently": "^9.0.1",
     "electron": "^32.1.2",
+    "electron-builder": "^25.0.5",
     "eslint": "^9.9.0",
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
@@ -34,6 +39,33 @@
     "globals": "^15.9.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.12",
-    "vite": "^5.4.1"
+    "vite": "^5.4.1",
+    "wait-on": "^8.0.1"
+  },
+  "build": {
+    "appId": "com.tringcorp.yourapp",
+    "productName": "YourAppName",
+    "directories": {
+      "buildResources": "assets"
+    },
+    "files": [
+      "build/**/*",
+      "electron/**/*"
+    ],
+    "extraMetadata": {
+      "main": "electron/main.js"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "assets/app-icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/app-icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/app-icon.png"
+    }
   }
 }

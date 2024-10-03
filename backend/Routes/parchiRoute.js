@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import History from "../model/History.js";
 import { checkSessionTime, nextCardOpenTime, currentCardOpenTime } from "../timeService.js";
 import sequelize from "../db.js";
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 import { authMiddleware } from "../auth.js";
 import {generateReceipt} from '../parchiUtils.js';
 
@@ -154,6 +154,39 @@ router.post("/:id/cashout",checkSessionTime ,async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+
+router.post("/:id/cancle", checkSessionTime, async (req, res) => {
+  const { id } = req.params; // Extract the parchi ID from the request parameters
+  try {
+    // Step 1: Find the parchi to be deleted
+    const parchiToDelete = await Parchi.findByPk(id);
+    if (!parchiToDelete) {
+      return res.status(404).json({ error: "Parchi not found" });
+    }
+
+    // Step 2: Check if there are any newer parchis
+    const hasNewerParchis = await Parchi.findOne({
+      where: {
+        createdAt: {
+          [Op.gt]: parchiToDelete.createdAt // Check if there are any parchis created after the one to be deleted
+        },
+      },
+    });
+
+    // Step 3: If no newer parchis exist, delete the parchi
+    if (!hasNewerParchis) {
+      await Parchi.destroy({ where: { id } }); // Delete the parchi
+      return res.status(200).json({ message: "Parchi deleted successfully" });
+    } else {
+      return res.status(400).json({ error: "Cannot delete parchi, a newer parchi exists" });
+    }
+  } catch (error) {
+    console.error("Error deleting parchi:", error);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
 
 // Route to get a single Parchi by ID
 router.get("/:id", async (req, res) => {

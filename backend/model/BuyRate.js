@@ -1,11 +1,11 @@
 import {Model, DataTypes} from 'sequelize';
 import sequelize  from '../db.js';
-
+   
 class BuyRate extends Model {}
 //NOTE bhai ye card_id hai yaad rakhio
 BuyRate.init({
   id: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING, 
     allowNull: false,
     primaryKey: true
   },
@@ -21,6 +21,7 @@ BuyRate.init({
     type: DataTypes.STRING,
     allowNull: true
   },
+  
 }, {
   sequelize,
   modelName: 'BuyRate'

@@ -6,11 +6,24 @@ import { useEffect, useState } from "react";
 import { Footer } from "./Footer.jsx";
 import { HistoryList } from "./HistoryList.jsx";
 import Card from "./Card.jsx";
-import useParchiStore from "../store/useStore.js";
 import Notification from "./Notification.jsx";
+import { useNavigate } from "react-router-dom";
 
 export const Main = () => {
   const [cardsArr, setCardsArr] = useState([]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey && event.key === 'l') {
+        event.preventDefault(); 
+        navigate('/login'); 
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [navigate]);
 
   const fetchCards = async () => {
     try {
@@ -32,10 +45,11 @@ export const Main = () => {
           <div className="border-2 border-white rounded-lg col-span-1 h-[60dvh]">
             <Timer arr={cardsArr} />
             <Notification cards={cardsArr}/>
+            
           </div>
           <div className="border-2 border-white rounded-lg col-span-3">
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-4 p-2">
-              {cardsArr.map((card) => (
+              {cardsArr && cardsArr.map((card) => (
                 <div key={card.id} className="flex flex-col items-center">
                   <Card input={true} card={card} />
                 </div>

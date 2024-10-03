@@ -26,9 +26,9 @@ export function countdownProvider() {
 
   const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds; // Ensure 2-digit seconds
 
-  console.log(`\ncurrent time: ${currentTimeForCountdown.format("hh:mm:ss A")}`);
-  console.log(`card will open at: ${currentCardOpenTime.format("hh:mm:ss A")}`);
-  console.log(`difference : ${minutes}:${formattedSeconds}`);
+  // console.log(`\ncurrent time: ${currentTimeForCountdown.format("hh:mm:ss A")}`);
+  // console.log(`card will open at: ${currentCardOpenTime.format("hh:mm:ss A")}`);
+  // console.log(`difference : ${minutes}:${formattedSeconds}`);
 
   // Return formatted time as "mm:ss"
   if (countdownDifference < 10) return 0;
@@ -69,9 +69,9 @@ const checkCardOpenTime = setInterval(() => {
     nextCardOpenTime = currentCardOpenTime.add(INTERVAL_MINUTES, "minute");
     previousCardTime = currentCardOpenTime.subtract(INTERVAL_MINUTES, "minute");
 
-    // console.log(`\nprevious card was opened at: ${previousCardTime.format("HH:mm")}`);
-    // console.log(`current card will open at: ${currentCardOpenTime.format("HH:mm")}`);
-    // console.log(`Next card will open at: ${nextCardOpenTime.format("HH:mm")}`);
+    console.log(`\nprevious card was opened at: ${previousCardTime.format("HH:mm")}`);
+    console.log(`current card will open at: ${currentCardOpenTime.format("HH:mm")}`);
+    console.log(`Next card will open at: ${nextCardOpenTime.format("HH:mm")}`);
   }
 
   // Optionally, check if it's after session end time and stop the interval

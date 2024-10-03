@@ -1,4 +1,8 @@
+> ## parchi can be cancled make an apposite transaction route
+> ## send all parchi from privous card open time to current card open timebuy
+
 # high pri
+`phone: 8126475585`
 > - Clock Drift or Sync Issues
 If the server time is not perfectly in sync with the client time (e.g., due to clock drift or delays), transactions might be prematurely allowed or disallowed. You might want to synchronize the client time with the server to ensure consistency.
 

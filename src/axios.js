@@ -2,6 +2,7 @@ import Axios from 'axios';
 
 const axios = Axios.create({
   baseURL: 'http://localhost:6969',  // Ensure to replace with your production baseURL
+  baseURL: 'http://192.168.29.48:6969',
   timeout: 50000,
 });
 

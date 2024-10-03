@@ -4,7 +4,7 @@ import express from 'express';
 import { Op } from 'sequelize';
 const router = express.Router();
 
-import { currentCardOpenTime } from '../timeService.js';
+import { currentCardOpenTime, previousCardTime } from '../timeService.js';
 // Get all history
 router.get('/history', async (req, res) => {
   try {
@@ -42,24 +42,13 @@ router.get('/history/now', async (req, res) => {
 
 router.get('/history/before', async (req, res) => {
   try {
-    const currentTime = currentCardOpenTime.format("HH:mm");
-    console.log("Current Time:", currentTime); 
-    // const winningCards = await History.findAll({
-    //   where: {
-    //     cashOutTime: { 
-    //       [Op.lt]: currentTime // Use Sequelize's operators to find entries before current time
-    //     }
-    //   }, 
-    //   include: {
-    //     model: Card,
-    //     attributes: ['name', 'number'] // Include the Card model and fetch 'name' and 'number'
-    //   }
-    // });
+    const currentOpeningTime = currentCardOpenTime.format("HH:mm");
+    // console.log("currentOpeningTime :", currentOpeningTime); 
 
     const winningCards = await History.findAll({
       where: {
         cashOutTime: {
-          [Op.lt]: currentTime
+          [Op.lt]: currentOpeningTime
         } 
       },
       include: {
@@ -70,6 +59,7 @@ router.get('/history/before', async (req, res) => {
 
     if (winningCards.length > 0) {
       res.json(winningCards);
+
     } else {
       res.json({success:false, message: "No winning cards found before the current time." });
     }
@@ -96,17 +86,17 @@ router.get('/history/:id', async (req, res) => {
 });
 
 // Create a new history
-router.post('/history', async (req, res) => {
-  try {
-    const { card_id } = req.body;  // Destructure the card_id from the request body
-    const newhistory = await History.create({ card_id, cashOutTime: "8:47" }); // Pass it as an object
-    console.log("added history");
-    res.status(201).json(newhistory);
-  } catch (err) {
-    res.status(400).json({ error: 'Error creating history' });
-    console.log(err);
-  }
-});
+// router.post('/history', async (req, res) => {
+//   try {
+//     const { card_id } = req.body;  // Destructure the card_id from the request body
+//     const newhistory = await History.create({ card_id, cashOutTime: "8:47" }); // Pass it as an object
+//     console.log("added history");
+//     res.status(201).json(newhistory);
+//   } catch (err) {
+//     res.status(400).json({ error: 'Error creating history' });
+//     console.log(err);
+//   }
+// });
 
 // Export the router
 export default router;
