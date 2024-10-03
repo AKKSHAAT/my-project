@@ -1,9 +1,11 @@
 // src/components/Login.js
 import React, { useState } from 'react';
-import axios from '../axios.js';
+// import axios from '../axios.js';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Login = () => {
+  const route = 'https://my-project-cii4.onrender.com/api/user/login';
   const nav = useNavigate();
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
@@ -14,7 +16,7 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await axios.post('api/user/login', {
+      const response = await axios.post(route, {
         id: userId, 
         password
       });

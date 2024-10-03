@@ -1,8 +1,8 @@
 import Axios from 'axios';
 
 const axios = Axios.create({
-  baseURL: 'http://localhost:6969',  // Ensure to replace with your production baseURL
-  baseURL: 'http://192.168.29.48:6969',
+  // baseURL: 'http://localhost:6969',  // Ensure to replace with your production baseURL
+  baseURL: 'https://my-project-cii4.onrender.com',
   timeout: 50000,
 });
 
@@ -14,13 +14,13 @@ axios.interceptors.request.use(
     if (token) {
       config.headers['authorization'] = `Bearer ${token}`;
     } else {
-      console.warn('No auth token found in localStorage');
+      console.log('No auth token found in localStorage');
     }
 
     if (id) {
       config.headers['id'] = id;
     } else {
-      console.warn('No user ID found in localStorage');
+      console.log('No user ID found in localStorage');
     }
 
     return config;

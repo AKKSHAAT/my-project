@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const RandomCardSelector = ({ cards }) => {
+const Notification = ({ cards }) => {
   const [selectedCard, setSelectedCard] = useState(null);
 
   // Function to select a random card
@@ -41,4 +41,4 @@ const RandomCardSelector = ({ cards }) => {
   );
 };
 
-export default RandomCardSelector;
+export default Notification;

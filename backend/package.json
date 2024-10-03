@@ -17,6 +17,7 @@
     "dayjs": "^1.11.13",
     "express": "^4.21.0",
     "jsonwebtoken": "^9.0.2",
+    "nodemon": "^3.1.7",
     "receiptline": "^1.16.1",
     "sequelize": "^6.37.3",
     "socket.io": "^4.8.0",
