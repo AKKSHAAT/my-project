@@ -5,7 +5,7 @@ import Modal from "./Modal"; // Import Modal component
 import {handleParchiTransaction} from '../transactionService.js'
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-
+ 
 export const Footer = () => {
   const navigate = useNavigate(); 
   const PRICE = 11;
