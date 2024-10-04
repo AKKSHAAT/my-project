@@ -4,6 +4,7 @@ import axios from "../axios.js";
 import Modal from "./Modal"; // Import Modal component
 import {handleParchiTransaction} from '../transactionService.js'
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export const Footer = () => {
   const navigate = useNavigate(); 
@@ -64,6 +65,7 @@ export const Footer = () => {
       >
         Day Bill
       </button>
+      <Link to="/receipt/1"> lmao</Link>
 
       {/* Modal to display cards */}
       <Modal isOpen={isModalOpen} onClose={closeModal}>
