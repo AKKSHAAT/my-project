@@ -39,7 +39,7 @@ export const Footer = () => {
       if(res.error || res.success == false) {
         setErr('Request failed');
       } else if(res.success == true) {
-        navigate(0);
+        // navigate(0);
         console.log(res.message);
       }
       

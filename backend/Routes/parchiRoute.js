@@ -219,7 +219,7 @@ router.get("/:id", async (req, res) => {
       if (!parchi) return res.status(404).json({ error: "Parchi not found" });
 
       const receipt = generateReceipt(parchi);
-      return res.status(200).json({success: true, receipt});
+      return res.status(200).json({success: true, receipt}); 
     } catch (error) {
       console.error("Error fetching parchi:", error);
       return res.status(500).json({ error: "Internal Server Error" });

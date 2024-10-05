@@ -1,12 +1,13 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
-import path from 'path';
-import fs from 'fs';  // File system module for writing to LPT port
-import { fileURLToPath } from 'url';
-
-let mainWindow;
+import { app, BrowserWindow, ipcMain } from "electron";
+import path from "path";
+import { fileURLToPath } from "url";
+import pkg from 'electron-pos-printer'; // Import the whole package
+const { PosPrinter } = pkg;
 // Create __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+let mainWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -16,57 +17,61 @@ function createWindow() {
     frame: false,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false, // Allow using Node APIs in the renderer process
-      enableRemoteModule: true, // Needed for remote module usage
+      contextIsolation: false, // Allows Node.js APIs directly in the renderer
+      enableRemoteModule: true, // Enable remote module usage
     },
   });
 
-  // Load the appropriate URL based on app packaging status
   const startUrl = app.isPackaged
-    ? `file://${path.resolve(path.join(__dirname, '../dist/index.html'))}` // Adjust to the dist folder
-    : 'http://localhost:5173/'; // Your React development server URL
+    ? `file://${path.resolve(path.join(__dirname, "../dist/index.html"))}`
+    : "http://localhost:5173/";
 
   mainWindow.loadURL(startUrl);
-  
-  ipcMain.handle('print-receipt', async (event, receiptText) => {
-    console.log("receiptText");
-    return printReceipt(receiptText);  // Pass the receipt text to the printer function
+  mainWindow.webContents.openDevTools();
+
+  mainWindow.on("closed", () => {
+    mainWindow = null;
   });
-
-  mainWindow.on('closed', () => (mainWindow = null));
 }
 
-async function printReceipt(receiptText) {
-  try {
-    // Write the receipt text to the LPT1 port (adjust if you use LPT2, etc.)
-    const lptPort = '\\\\.\\LPT1';  // Windows uses this format for LPT ports
+app.on("ready", createWindow);
 
-    fs.writeFile(lptPort, receiptText, function (err) {
-      if (err) {
-        console.error('Error writing to LPT port:', err);
-        return { success: false, error: err };
-      }
-      console.log('Receipt sent to printer successfully!');
-      return { success: true };
-    });
-  } catch (error) {
-    console.error('Error during printing:', error);
-    return { success: false, error };
-  }
-}
-
-app.on('ready', createWindow);
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
     app.quit();
   }
 });
 
-app.on('activate', () => {
+app.on("activate", () => {
   if (mainWindow === null) {
     createWindow();
   }
 });
 
+// Handle request for printer list
+ipcMain.handle("get-printers", async (event) => {
+  const printers = await mainWindow.webContents.getPrintersAsync();
+  return printers; // Return printers to renderer process
+});
 
+// Listen for print requests from the renderer process
+ipcMain.on("print-request", (event, printData) => {
+  // Get printer details from the printData and send it to PosPrinter
+  const options = {
+    preview: false,
+    margin: "0 0 0 0",
+    copies: 1,
+    printerName: printData.printerName,
+    timeOutPerLine: 400,
+    silent: true,
+    pageSize: "72mm", // Use 72mm width
+  };
+
+  PosPrinter.print(printData.data, options)
+    .then(() => {
+      event.reply("print-success", "Print successful");
+    })
+    .catch((error) => {
+      event.reply("print-error", error.message);
+    });
+});

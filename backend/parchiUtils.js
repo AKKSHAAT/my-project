@@ -5,7 +5,7 @@ export function generateReceipt(parchi) {
   const items = parchi.cards
     .map(card => `${card.qty}x ${card.name.padEnd(20)} ₹ ${card.cost.toFixed(2)}`)
     .join("\n"); // Join all items with a newline
-
+ 
   // Template for the receipt
   const text = `
     ^Receipt
