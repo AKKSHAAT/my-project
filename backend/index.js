@@ -76,7 +76,7 @@ io.on("connection", async (socket) => {
       include: {
         model: Card,
         attributes: ["id", "name"],
-      },
+      }, 
     });
 
     // Emit the current buy rate data to the newly connected client

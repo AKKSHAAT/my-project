@@ -39,8 +39,9 @@ export const Footer = () => {
       if(res.error || res.success == false) {
         setErr('Request failed');
       } else if(res.success == true) {
-        // navigate(0);
-        console.log(res.message);
+        // console.log("res::   ", res);
+        navigate(`/receipt/${res.parchi_id}`);
+        console.log(res.messages);
       }
       
     }
@@ -65,8 +66,12 @@ export const Footer = () => {
       >
         Day Bill
       </button>
-      <Link to="/receipt/1"> lmao</Link>
-
+      <button
+        onClick={()=> navigate('/cancle')}
+        className={`px-6 py-2 text-white rounded-md hover:bg-blue-600 focus:outline-none translate-color duration-300 border`}
+      >
+        Cancle
+      </button>
       {/* Modal to display cards */}
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <h2 className="text-2xl font-bold mb-4">Cards</h2>

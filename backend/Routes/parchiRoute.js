@@ -1,6 +1,7 @@
 import express from "express";
 import Parchi from "../model/Parchi.js"; // Adjust the path as necessary
 import User from "../model/User.js"; // Assuming you need to associate the parchi with a user
+import Card from "../model/Card.js"
 import dayjs from "dayjs";
 import History from "../model/History.js";
 import { checkSessionTime, nextCardOpenTime, currentCardOpenTime } from "../timeService.js";
@@ -64,6 +65,40 @@ router.post("/",checkSessionTime , async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+
+
+
+router.post("/future",checkSessionTime , async (req, res) => {
+  const { cards, total, user_id, cashOutTime} = req.body;
+  console.log(user_id);
+  if (!Array.isArray(cards) || cards.length === 0) {
+    return res.status(400).json({ error: "Cards should be a non-empty array" });
+  }
+
+  if (!total || total < 0) {
+    return res.status(400).json({ error: "Invalid total value" });
+  }
+
+  try {
+    // Create a new parchi record
+    const parchi = await Parchi.create({
+      cards,
+      total,
+      user_id,
+      cashOutTime,
+      totalQty: calculateTotalQty(cards),
+    });
+
+    return res
+      .status(201)
+      .json({ message: "Parchi created successfully", parchi });
+  } catch (error) {
+    console.error("Error creating parchi:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 // Route to get all Parchis
 router.get("/", async (req, res) => {
@@ -198,10 +233,11 @@ router.get("/:id", async (req, res) => {
     });
 
     if (!parchi) {
-      return res.status(404).json({ error: "Parchi not found" });
+      return res.status(404).json({success: false , error: "Parchi not found" });
     }
     console.log(parchi.getFormattedDate());
-    return res.status(200).json(parchi);
+    parchi.date = parchi.getFormattedDate();
+    return res.status(200).json({success: true ,parchi});
   } catch (error) {
     console.error("Error fetching parchi:", error);
     return res.status(500).json({ error: "Internal Server Error" });

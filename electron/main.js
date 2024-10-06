@@ -3,6 +3,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import pkg from 'electron-pos-printer'; // Import the whole package
 const { PosPrinter } = pkg;
+
+
+
 // Create __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
