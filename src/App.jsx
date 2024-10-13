@@ -5,6 +5,8 @@ import Login from "./components/Login.jsx";
 import { Receipt } from "./components/Receipt.jsx";
 import { useEffect } from "react";
 import Cancel from "./components/Cancle.jsx";
+import Cashout from "./components/Cashout.jsx";
+import BuyFutureParchi from "./components/BuyFutureParchi.jsx";
 
 
 function App() {
@@ -15,6 +17,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/receipt/:id" element={<Receipt />} />
         <Route path="/cancle" element={<Cancel />} />
+        <Route path="/cashout" element={<Cashout />} />
+        <Route path="/BuyFuture" element={<BuyFutureParchi />} />
       </Routes>
     </Router>
   );

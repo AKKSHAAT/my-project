@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../axios";
 const { ipcRenderer } = window.require("electron");
-import { printData } from "./printerUtils";
+import { printParchi } from "./printerUtils";
 import { useNavigate } from "react-router-dom";
 
 export const Receipt = () => {
@@ -43,7 +43,7 @@ export const Receipt = () => {
   // Ensure printData only gets called once, after receipt is populated
   useEffect(() => {
     if (receipt.cards.length > 0 && !printed) {
-      printData({ ...receipt, date: formatDate(receipt.date) }); // Call printData with formatted date
+      printParchi({ ...receipt, date: formatDate(receipt.date) }); // Call printData with formatted date
       setPrinted(true); // Set flag to true after printing
       if(setPrinted) {
         navigate("/");

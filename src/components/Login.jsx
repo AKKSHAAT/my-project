@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Login = () => {
-  const route = 'https://my-project-cii4.onrender.com/api/user/login';
+  // const route = 'https://my-project-cii4.onrender.com/api/user/login';
+  const route = 'http://localhost:6969';
   const nav = useNavigate();
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');

@@ -55,7 +55,7 @@ const io = new Server(server, {
 
 // Attach io to requests
 app.use((req, res, next) => {
-  req.io = io;
+  req.io = io; 
   next();
 });
 
@@ -116,9 +116,9 @@ io.on("connection", async (socket) => {
 });
 
 // Middleware to parse JSON bodies
-cardFactory();
-app.use(express.json());
-
+cardFactory(); 
+app.use(express.json());  
+ 
 // API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoute);
@@ -133,6 +133,10 @@ app.use("/api/transaction", transactionRoutes);
 app.get("/api/get-server-time", (req, res) => {
   res.status(200).json({ timeLeft: countdownProvider() });
   console.log("timeSent:  ", countdownProvider());
+});
+app.get("/api/get-server-time/next-card", (req, res) => {
+  res.status(200).json({ time: nextCardOpenTime });
+  console.log("\n Sent next card time for future parchi:  ", nextCardOpenTime.format('HH:mm') );
 });
 
 // Session route

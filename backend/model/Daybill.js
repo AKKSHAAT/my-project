@@ -8,7 +8,7 @@ class Daybill extends Model {
   }
 
   getFormattedDate() {
-    return dayjs(this.createdAt).format('YYYY-MM-DD HH:mm:ss');
+    return dayjs(this.date).format('YYYY-MM-DD'); // Only date, no time
   }
 }
 
@@ -17,8 +17,8 @@ Daybill.init({
     type: DataTypes.STRING,
     allowNull: false,
     references: {
-      model: 'Users', // Reference to the User model
-      key: 'id', // Assuming the User model has an 'id' field
+      model: 'Users', 
+      key: 'id', 
     },
   },
   sales: {
@@ -35,8 +35,8 @@ Daybill.init({
     defaultValue: 0,
   },
   date: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
+    type: DataTypes.DATEONLY,  // Use DATEONLY to store only the date part
+    defaultValue: dayjs().startOf('day').toDate(), // Today's date at 00:00:00
   }
 }, {
   timestamps: true,

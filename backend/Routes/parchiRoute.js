@@ -116,18 +116,13 @@ router.get("/", async (req, res) => {
 // Route to cash out a parchi
 router.post("/:id/cashout",checkSessionTime ,async (req, res) => {
   const parchiId = req.params.id;
-
   try {
     const parchi = await Parchi.findByPk(parchiId);
     if (!parchi) {
-      return res.status(404).json({ error: "Parchi not found" });
+      return res.status(404).json({ error: "Parchi not found" }); 
+    } if (parchi.cashed) {
+      return res.status(200).json({ error: "Parchi is already cashed out" });
     }
-
-    if (parchi.cashed) {
-      return res.status(400).json({ error: "Parchi is already cashed out" });
-    }
-
-    const queryDate = "2024-09-28";
 
     const parchiDate = dayjs(parchi.createdAt).format("YYYY-MM-DD");
     const history = await History.findOne({
@@ -139,9 +134,17 @@ router.post("/:id/cashout",checkSessionTime ,async (req, res) => {
         cashOutTime: parchi.cashOutTime, // Matching cashOutTime
       },
     });
-    console.log("history:", history.card_id);
-
+    if (!history) {
+      console.log("history not found");
+      return res
+      .status(200)
+      .json({ success: false, error: "Lost", winningAmount: 0 });
+    }
     // match ids here
+    if(!history) {
+      return res.status(400).json({success:false, error: "Did not win" });
+    }
+    console.log("history:", history.card_id);
     const cardIds = parchi.cards.map(card => card.id);
     console.log("cardIds: ", cardIds);
     console.log("history.card_id: ", history.card_id);
@@ -177,16 +180,16 @@ router.post("/:id/cashout",checkSessionTime ,async (req, res) => {
       // send winning amout
       return res
       .status(200)
-      .json({ message: "Parchi cashed out successfully", winningAmount });
+      .json({success:true, message: "Parchi cashed out successfully", winningAmount });
     }
   
 
     return res
       .status(200)
-      .json({ message: "Parchi cashed out successfully", winningAmount: 0 });
+      .json({success:true, message: "Parchi cashed out successfully", winningAmount: 0 });
   } catch (error) {
     console.error("Error cashing out parchi:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({success:false, error: "Internal Server Error" });
   }
 });
 
@@ -194,7 +197,7 @@ router.post("/:id/cashout",checkSessionTime ,async (req, res) => {
 router.post("/:id/cancle", checkSessionTime, async (req, res) => {
   const { id } = req.params; // Extract the parchi ID from the request parameters
   try {
-    // Step 1: Find the parchi to be deleted
+    // Step 1: Find the parchi to be deleted 
     const parchiToDelete = await Parchi.findByPk(id);
     if (!parchiToDelete) {
       return res.status(404).json({ error: "Parchi not found" });
@@ -212,8 +215,10 @@ router.post("/:id/cancle", checkSessionTime, async (req, res) => {
     // Step 3: If no newer parchis exist, delete the parchi
     if (!hasNewerParchis) {
       await Parchi.destroy({ where: { id } }); // Delete the parchi
-      return res.status(200).json({ message: "Parchi deleted successfully" });
+      console.log("cancled");
+      return res.status(200).json({ message: "Parchi deleted successfully", amount: parchiToDelete.total});
     } else {
+      console.log(" a newer parchi exists");
       return res.status(400).json({ error: "Cannot delete parchi, a newer parchi exists" });
     }
   } catch (error) {

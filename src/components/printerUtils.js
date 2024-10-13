@@ -27,7 +27,7 @@ function populateData(cards) {
 
 // Function to print data
 // Function to print data
-export async function printData(receipt) {
+export async function printParchi(receipt) {
   try {
     const printers = await getPrinters();
 
@@ -35,7 +35,7 @@ export async function printData(receipt) {
     await populateData(receipt.cards);
 
     const printerName = printers.length > 0 ? printers[0].name : ""; // Use first printer
-    const printData = {
+    const printParchi = {
       printerName: printerName,
       data: [
         {
@@ -68,6 +68,11 @@ export async function printData(receipt) {
         },
         {
           type: "text",
+          value: `Time : ${receipt.cashOutTime}`,
+          style: { fontSize: "16px", textAlign: "center" },
+        },
+        {
+          type: "text",
           value: `*CONDITIONS APPLY:`,
           style: { fontSize: "16px", textAlign: "center" },
         },
@@ -87,9 +92,50 @@ export async function printData(receipt) {
         },
       ],
     };
-
     // Send print request to main process
-    ipcRenderer.send("print-request", printData);
+    ipcRenderer.send("print-request", printParchi);
+  } catch (error) {
+    console.error("Error in printing:", error);
+  }
+}
+
+export async function printDaybill(receipt) {
+  try {
+    const printers = await getPrinters();
+
+    const printerName = printers.length > 0 ? printers[0].name : ""; // Use first printer
+    const printParchi = {
+      printerName: printerName,
+      data: [
+        {
+          type: "text",
+          style: { border: "1px solid white", fontSize: "20px" },
+          value: `User Id: ${receipt.user_id}`,
+        },
+        {
+          type: "text",
+          style: { border: "1px solid white", fontSize: "20px" },
+          value: `Sales: ${receipt.sales}`,
+        },
+        {
+          type: "text",
+          style: { border: "1px solid white", fontSize: "20px" },
+          value: `Qty: ${receipt.qty}`,
+        },
+        {
+          type: "text",
+          style: { border: "1px solid white", fontSize: "20px" },
+          value: `Expenditure: ${receipt.expenditure}`,
+        },
+        {
+          type: "text",
+          value: `Time : ${receipt.createdAt}`,
+          style: { fontSize: "16px", textAlign: "center" },
+        },
+      ],
+    };
+    // Send print request to main process
+    ipcRenderer.send("print-request", printParchi);
   } catch (error) {
     console.error("Error in printing:", error);
   }

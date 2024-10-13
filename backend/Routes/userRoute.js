@@ -33,6 +33,53 @@ router.get('/:id', async (req, res) => {
 router.post('/:id/addpoints', async (req, res) => {
   const userId = req.params.id;
   let { amount } = req.body;
+  console.log(":::::::::::amount:::::::::", amount);
+
+  // Convert amount to an integer
+  amount = parseInt(amount, 10);
+
+  // Check if amount is valid
+  if (!amount || amount <= 0) {
+    return res.status(400).json({ error: 'Invalid amount' });
+  }
+
+  try {
+    // Check if user exists
+    const user = await User.findOne({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Update user's points
+    user.points += amount;
+    await user.save();
+
+    // Create a transaction record
+    const transaction = await Transaction.create({
+      userId: user.id,
+      amount: amount,
+      type: 'add', // You can add more types as needed  
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Points added successfully',
+      amount,
+      user,
+      transaction, 
+    });
+  } catch (error) {
+    console.error('Error adding points:', error);
+    return res.status(500).json({success: false, error: 'Internal Server Error' });
+  }
+});
+
+
+
+router.post('/:id/subpoints', async (req, res) => {
+  const userId = req.params.id;
+  let { amount } = req.body;
+  console.log(":::::::::::amount:::::::::", amount);
 
   // Convert amount to an integer
   amount = parseInt(amount, 10);
@@ -61,13 +108,14 @@ router.post('/:id/addpoints', async (req, res) => {
     });
 
     return res.status(200).json({
+      success: true,
       message: 'Points added successfully',
       user,
       transaction,
     });
   } catch (error) {
     console.error('Error adding points:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({success: false, error: 'Internal Server Error' });
   }
 });
 

@@ -1,10 +1,10 @@
 import express from "express";
 import Daybill from "../model/Daybill.js";
 import User from "../model/User.js";
+import dayjs from "dayjs";
 
 const router = express.Router();
 
-// Route to create a new Daybill
 router.post("/", async (req, res) => {
   const { user_id, sales, qty, expenditure } = req.body;
 
@@ -24,22 +24,46 @@ router.post("/", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Create a new Daybill
-    const daybill = await Daybill.create({
-      user_id,
-      sales,
-      qty,
-      expenditure,
+    // Check if a daybill for today and the same user already exists
+    const today = dayjs().startOf('day').toDate();
+    let daybill = await Daybill.findOne({
+      where: { date: today, user_id },
     });
 
-    return res
-      .status(201)
-      .json({ message: "Daybill created successfully", daybill });
+    if (daybill) {
+      // Accumulate new values with the existing ones
+      const updatedSales = daybill.sales + sales;
+      const updatedQty = daybill.qty + qty;
+      const updatedExpenditure = daybill.expenditure + expenditure;
+
+      await daybill.update({
+        sales: updatedSales,
+        qty: updatedQty,
+        expenditure: updatedExpenditure,
+      });
+
+      return res
+        .status(200)
+        .json({ message: "Daybill updated successfully", daybill });
+    } else {
+      // Create a new daybill if none exists
+      daybill = await Daybill.create({
+        user_id,
+        sales,
+        qty,
+        expenditure,
+      });
+
+      return res
+        .status(201)
+        .json({ message: "Daybill created successfully", daybill });
+    }
   } catch (error) {
-    console.error("Error creating daybill:", error);
+    console.error("Error creating or updating daybill:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 // Route to get all Daybills for a user
 router.get("/for/:user_id", async (req, res) => {

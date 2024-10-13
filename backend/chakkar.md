@@ -1,5 +1,6 @@
 > ## parchi can be cancled make an apposite transaction route
 > ## send all parchi from privous card open time to current card open timebuy
+> ## if a parchi wins add the expenditur to users daybill
 
 # high pri
 `phone: 8126475585`
